@@ -12,12 +12,20 @@ beforeEach(async () => {
             companies (code, name, description) VALUES ('oly', 'oloye tech', 'Makers of oly') 
             RETURNING code, name`
 	);
+	const invoiceTest = await db.query(
+		`INSERT INTO 
+            invoices (comp_code, amt, paid, add_date, paid_date) 
+            VALUES ('oly', 100, false, '2018-01-01', null) 
+            RETURNING id`
+	);
 	testCompany = result.rows[0];
 });
 
 afterEach(async () => {
 	// delete any data created by test
 	await db.query("DELETE FROM companies");
+	await db.query("DELETE FROM invoices");
+	await db.query("SELECT setval('invoices_id_seq', 1, false)");
 });
 
 afterAll(async () => {
@@ -44,6 +52,7 @@ describe("GET /:code", () => {
 				code: "oly",
 				name: "oloye tech",
 				description: "Makers of oly",
+				invoices: [1],
 			},
 		});
 	});
@@ -57,7 +66,7 @@ describe("POST /", () => {
 	test("It should add a company", async () => {
 		const data = {
 			code: "puma",
-			name: "Puma Inc",
+			name: "puma",
 			description: "Makers of puma brands",
 		};
 		const res = await request(app).post(`/companies`).send(data);
