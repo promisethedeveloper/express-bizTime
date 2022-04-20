@@ -3,7 +3,7 @@ const db = require("../db");
 const router = new express.Router();
 
 // Adding an industry
-router.post("/:industry", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
 	try {
 		const { code, industry } = req.body;
 		const result = await db.query(

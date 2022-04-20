@@ -18,6 +18,17 @@ beforeEach(async () => {
             VALUES ('oly', 100, false, '2018-01-01', null) 
             RETURNING id`
 	);
+	const industryTest = await db.query(
+		`INSERT INTO 
+			industries (code, industry) 
+			VALUES ('tech', 'Technology'), ('mktg', 'Marketing')`
+	);
+	const industryCompaniesTest = await db.query(
+		`INSERT INTO 
+			industries_companies (industry_code, comp_code) 
+			VALUES ('tech', 'oly'), ('mktg', 'oly')`
+	);
+
 	testCompany = result.rows[0];
 });
 
@@ -25,6 +36,8 @@ afterEach(async () => {
 	// delete any data created by test
 	await db.query("DELETE FROM companies");
 	await db.query("DELETE FROM invoices");
+	await db.query("DELETE FROM industries");
+	await db.query("DELETE FROM industries_companies");
 	await db.query("SELECT setval('invoices_id_seq', 1, false)");
 });
 
@@ -53,6 +66,7 @@ describe("GET /:code", () => {
 				name: "oloye tech",
 				description: "Makers of oly",
 				invoices: [1],
+				industries: ["Technology", "Marketing"],
 			},
 		});
 	});

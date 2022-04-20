@@ -101,7 +101,7 @@ describe("PUT /invoices/:id", () => {
 	test("It should edit an invoice", async () => {
 		const res = await request(app)
 			.put(`/invoices/${testInvoice.id}`)
-			.send({ amt: 300 });
+			.send({ amt: 300, paid: false });
 		expect(res.statusCode).toBe(200);
 		expect(res.body).toEqual({
 			invoice: {
